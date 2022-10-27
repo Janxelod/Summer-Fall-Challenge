@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Dojo shader 1</title>
+		<link rel="stylesheet" href="./dojo_shader_2.css">
+	</head>
+	<body>
+		<script src="./lib/three.min.js"></script>
+      <script type="module">
+         import * as THREE from './lib/three.min.js';
+         // import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+         // import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
+         //Your code here
+      </script>
+		<script src="./shaders/earth_fragment.glsl"></script>		
+		<script src="./shaders/earth_vertex.glsl"></script>				
+      <script src="./shaders/audio_visualizer_fragment.glsl"></script>		
+		<script src="./shaders/audio_visualizer_vertex.glsl"></script>	
+      <script src="./shaders/alpacaFragment.glsl"></script>		
+		<script src="./shaders/alpacaVertex.glsl"></script>		
+		<script type="module" src="./dojo_shader_2.js"></script>
+
+      <div id="#scene-container"></div>
+	</body>
+</html>
+
+
+
