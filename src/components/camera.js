@@ -1,21 +1,24 @@
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera } from "three";
+import { GLOBAL_CONFIG } from "../config";
 
 function createCamera() {
   const camera = new PerspectiveCamera(
-    35, // fov = Field Of View
-    1, // aspect ratio (dummy value)
+    60, // fov = Field Of View
+    window.innerWidth / window.innerHeight,
     0.1, // near clipping plane
-    150, // far clipping plane
+    20000 // far clipping plane
   );
 
-  // move the camera back so we can view the scene
-  camera.position.set(0, 0, 20);
+  camera.position.set(1.34, 1.37, 5.3);
 
+  let timeSinceStart = 0;
   camera.tick = (delta) => {
-      // increase the cube's rotation each frame
-      camera.position.z = (camera.position.z + 10 *delta) % 30;
-      //camera.position.z %= 10;
-   };
+    // GLOBAL_CONFIG.GetLogger().log("Cam posX: " + camera.position.x);
+    // GLOBAL_CONFIG.GetLogger().log("Cam posY: " + camera.position.y);
+    // GLOBAL_CONFIG.GetLogger().log("Cam posZ: " + camera.position.z);
+    // GLOBAL_CONFIG.GetLogger().log("Time: " + timeSinceStart);
+    timeSinceStart += delta;
+  };
 
   return camera;
 }

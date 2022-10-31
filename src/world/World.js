@@ -1,65 +1,284 @@
-import { createCamera } from '../components/camera.js';
-import { createCube } from '../components/cube.js';
-import { createLights } from '../components/lights.js';
-import { createScene } from '../components/scene.js';
+import { createCamera } from "../components/camera.js";
+import { createScene } from "../components/scene.js";
 
-import { Loop } from '../systems/loop.js';
-import { createRenderer } from '../systems/renderer.js';
-import { Resizer } from '../systems/resizer.js';
+import { Loop } from "../systems/loop.js";
+import { createRenderer } from "../systems/renderer.js";
+import { Resizer } from "../systems/resizer.js";
 
-import { createAlpaca} from "../objects/alpaca.js";
+import { createAlpaca } from "../objects/alpaca.js";
+
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+import { AxesHelper, Vector2, Vector3 } from "three";
+import { GLOBAL_CONFIG } from "../config.js";
+import {
+  addSequence,
+  createCameracontroller,
+  startSequences,
+} from "../systems/cameraController.js";
+
+import {
+  changeOrbitMeshesMaterial,
+  createOrbitMeshes,
+} from "../objects/orbitMeshes.js";
+
+import { createClouds } from "../objects/clouds.js";
+import { TWEEN } from "three/examples/jsm/libs/tween.module.min.js";
+
+import {
+  addEffectGlitch,
+  addEffectVignette,
+  createComposer,
+  removePass,
+} from "../components/postprocessing.js";
+import { createJarjacha } from "../objects/jarjacha.js";
 
 let camera;
 let renderer;
 let scene;
 let loop;
+let cameraController;
+let controls;
 
+let orbitMeshes;
+let clouds;
+let alpaca;
+let jarjacha;
+let initialAlpacaPosition;
+
+let composer;
 class World {
-   // 1. Create an instance of the World app
-   constructor(container) {
-      camera = createCamera();
-      scene = createScene();
-      renderer = createRenderer();
-      loop = new Loop(camera, scene, renderer);
-      container.append(renderer.domElement);
-      
-      const cube = createCube({ color: 'purple' });
-      const cube2 = createCube({ color: 'green' });
-      const light = createLights();
+  constructor(container) {
+    camera = createCamera();
+    renderer = createRenderer();
+    scene = createScene({ useFog: true, renderer: renderer });
 
-      const alpaca = createAlpaca();
+    composer = createComposer(renderer, scene, camera);
 
-      
-      loop.updatables.push(camera);
-      loop.updatables.push(cube);
-      //loop.updatables.push(light);
+    loop = new Loop(camera, scene, renderer, composer);
+    container.append(renderer.domElement);
 
-      scene.add(light);
-      scene.add(cube);
-      scene.add(cube2);
-      
-      scene.add(alpaca);
-      //cube.rotation.set(-0.5, -0.1, 0.8);
+    clouds = createClouds();
 
-      cube.position.x = -5;
+    alpaca = createAlpaca();
 
-      cube2.position.x = 5;
+    jarjacha = createJarjacha();
 
-      const resizer = new Resizer(container, camera, renderer);
-    }
- 
-   render() {
-   // draw a single frame
-      renderer.render(scene, camera);
-   }
-   
-   start() {
-      loop.start();
-   }
-   
-   stop() {
-      loop.stop();
-   }
- }
- 
- export { World };
+    orbitMeshes = createOrbitMeshes("models/AlpacaMarron.fbx", 500);
+
+    loop.updatables.push(camera);
+    loop.updatables.push(alpaca);
+
+    scene.add(alpaca);
+
+    initialAlpacaPosition = alpaca.position.clone();
+
+    // if (GLOBAL_CONFIG.DEBUG) {
+    //   scene.add(new AxesHelper(100));
+
+    //   loop.updatables.push(GLOBAL_CONFIG.GetLogger());
+    // }
+
+    const resizer = new Resizer(container, camera, renderer);
+  }
+
+  startCameraSequence() {
+    addSequence({
+      to: { x: 3.2, y: 3.27, z: 12.67 },
+      duration: 6000,
+      easing: TWEEN.Easing.Cubic.In,
+      onComplete: () => {
+        controls.autoRotateSpeed = (30 / 6) * 2; // speed of 2 does an orbit in 30 secs
+        controls.autoRotate = true;
+        //controls.enabled = true;
+
+        //alpaca.changeToDistortedMaterial();
+      },
+    });
+
+    addSequence({
+      to: { x: 1, y: 167, z: -5000 },
+      delay: 3000,
+      duration: 250,
+      onStart: () => {
+        //camera.position.z = -5000;
+
+        controls.autoRotate = false;
+        loop.updatables.push(clouds);
+        scene.add(clouds);
+      },
+      onComplete: () => {
+        alpaca.position.set(-67, -78, -5000 - 100);
+
+        // removePass("PixelPass");
+      },
+    });
+
+    addSequence({
+      to: { x: 3.2, y: 3.27, z: 12.67 },
+      duration: 10000,
+      easing: TWEEN.Easing.Sinusoidal.Out,
+      onStart: () => {
+        // loop.updatables.push(clouds);
+        // scene.add(clouds);
+        loop.updatables.push(orbitMeshes);
+        scene.add(orbitMeshes);
+
+        alpaca.startFlying?.();
+      },
+      onComplete: () => {
+        //addEffectSepia();
+
+        controls.autoRotate = true;
+        new TWEEN.Tween(alpaca.position)
+          .to(initialAlpacaPosition, 1500)
+          .start();
+      },
+      onUpdate: (object) => {
+        if (alpaca.position.z < -100) {
+          alpaca.position.set(object.x, object.y, object.z + 15);
+        }
+      },
+    });
+
+    addSequence({
+      to: {},
+      duration: 1500,
+      onStart: () => {
+        controls.autoRotateSpeed = (30 / 6) * 4 * 2; // speed of 2 does an orbit in 30 secs
+        controls.autoRotate = true;
+      },
+      onComplete: () => {
+        controls.autoRotate = false;
+      },
+    });
+
+    addSequence({
+      to: {},
+      duration: 3000,
+      delay: 3000,
+      onStart: () => {
+        addEffectVignette();
+        addEffectGlitch();
+      },
+      onComplete: () => {
+        removePass("EffectVignette");
+        removePass("EffectGlitch");
+        //removePass("EffectFilm");
+        changeOrbitMeshesMaterial();
+
+        alpaca.changeToDistortedMaterial?.();
+      },
+    });
+
+    addSequence({
+      to: {},
+      duration: 1500 * 3,
+      delay: 2000,
+      onStart: () => {
+        controls.autoRotateSpeed = (30 / 6) * 4 * 2;
+        //removePass("EffectGammaCorrection");
+        controls.autoRotate = true;
+      },
+      onComplete: () => {
+        controls.autoRotate = false;
+      },
+    });
+
+    addSequence({
+      to: { x: 8.8, y: 8.8, z: 31 },
+      duration: 6000,
+      onStart: () => {
+        // controls.autoRotateSpeed = (30 / 6) * 2 * 2;
+        removePass("EffectGammaCorrection");
+        scene.remove(alpaca);
+        scene.add(jarjacha);
+        // controls.autoRotate = true;
+      },
+      onComplete: () => {},
+    });
+
+    addSequence({
+      to: { x: 1.84, y: 1.57, z: 6.86 },
+      duration: 8000,
+      onStart: () => {
+        // controls.autoRotateSpeed = (30 / 6) * 2 * 2;
+        //removePass("EffectFilm");
+      },
+      onComplete: () => {},
+    });
+
+    addSequence({
+      to: { x: -5, y: -2, z: 377 },
+      duration: 4000,
+      onStart: () => {
+        // controls.autoRotateSpeed = (30 / 6) * 2 * 2;
+        //removePass("EffectFilm");
+      },
+      onComplete: () => {
+        console.log("End of lass scene");
+        scene.remove(orbitMeshes);
+      },
+    });
+
+    addSequence({
+      to: { x: -5, y: 2, z: -6.86 },
+      duration: 4000,
+      onStart: () => {
+        // controls.autoRotateSpeed = (30 / 6) * 2 * 2;
+        //removePass("EffectFilm");
+      },
+      onComplete: () => {},
+    });
+
+    addSequence({
+      to: {},
+      duration: 1000,
+      onStart: () => {
+        let finalDestiny = new Vector3();
+        finalDestiny = jarjacha.getWorldDirection(finalDestiny);
+        finalDestiny.multiplyScalar(500);
+        console.log("Destino final: ");
+        console.log(finalDestiny);
+        controls.target = jarjacha.position;
+        new TWEEN.Tween(jarjacha.position).to(finalDestiny, 12000).start();
+      },
+      onComplete: () => {},
+    });
+
+    startSequences();
+  }
+
+  initControls() {
+    controls = new OrbitControls(camera, renderer.domElement);
+
+    controls.minDistance = 2;
+    controls.maxDistance = 5000;
+
+    controls.enableDamping = true;
+
+    controls.enablePan = false;
+    controls.enableRotate = false;
+    controls.enableZoom = false;
+
+    controls.enabled = false;
+
+    cameraController = createCameracontroller(camera, controls);
+    loop.updatables.push(cameraController);
+  }
+
+  render() {
+    // draw a single frame
+    renderer.render(scene, camera);
+  }
+
+  start() {
+    loop.start();
+  }
+
+  stop() {
+    loop.stop();
+  }
+}
+
+export { World };

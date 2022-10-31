@@ -1,5 +1,5 @@
 {
-  "name": "specular-masking",
+  "name": "challenge-ete",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,10 @@
     "vite": "^3.1.0"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^18.6.4",
+    "@types/three": "^0.144.0",
+    "stats.js": "^0.17.0",
+    "three": "^0.146.0",
     "three-fbx-loader": "^1.0.3",
     "three-orbitcontrols": "^2.110.3"
   }

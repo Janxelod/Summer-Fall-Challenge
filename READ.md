@@ -1,11 +1,40 @@
-Challenge Creative Developer BeTomorrow été 2022
+## Challenge Creative Developer BeTomorrow été 2022
 
-Implémentation d'une simulation de fluide de type Lattice Boltzmann.
-Techno : threejs + GLSL avec un rendu en 3 passes.
+### Sujet: Métamorphose Maléfique
 
-Détails d'implémentation : 
-- passe 1 (Collision) : initialisation du système (iFrame == 0), ou récupération de l'état du système en provenance de la passe 2 (Stream), puis calcul des collisions afin de répartir les particules selon Navier-Stokes.
-- passe 2 (Stream) : répartition des particules par simple diffusion
-- passe 3 passe de visualisation densité -> palette de couleurs
+Demo inspired by the games of late 90s early 2000s.
 
-Stockage : 1 pixel = 1 lattice node = 9 momentums (masse*vitesse), soit 9 floats encodés sur un pixel RGBA.
+## Credits
+
+3D models, composition and programming:
+Joan Odicio
+https://github.com/Janxelod
+
+Music:
+Lonely Warrior - Horror OST
+https://www.newgrounds.com/audio/listen/1106473
+
+Skybox source:
+https://polyhaven.com/a/belfast_sunset_puresky
+
+## Shader Inspiration
+
+https://mrdoob.com/#/139/glsl_sandbox
+https://stemkoski.github.io/Three.js/
+https://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js/
+
+## Instructions
+
+Install http-server:
+
+```
+npm install http-server -g
+```
+
+Go to dist folder and execute:
+
+```
+http-server . -p 8000
+```
+
+If yarn build is executed, copy again the folders audio and texture in the root of the dist folder.

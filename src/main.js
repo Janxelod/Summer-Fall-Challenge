@@ -1,26 +1,45 @@
-import {
-Camera,
-Group,
-Scene,
-} from 'three';
+import { AudioListener, Audio, AudioLoader } from "three";
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { World } from "./world/World.js";
 
-import { World } from './world/World.js';
+const listener = new AudioListener();
+const sound = new Audio(listener);
+let loadSound = false;
+let world;
 
 function main() {
-   // Get a reference to the container element
-   const container = document.querySelector('#scene-container');
- 
-   // 1. Create an instance of the World app
-   const world = new World(container);
- 
-   // 2. Render the scene
-   //world.render();
-   world.start();
-   console.log("Creating the world");
- }
+  const container = document.querySelector("#scene-container");
+  world = new World(container);
 
-// call main to start the app
+  const startButton = document.getElementById("startButton");
+  startButton.addEventListener("click", init);
+
+  audioModulo();
+}
+
+function init() {
+  if (!loadSound) return;
+
+  const overlay = document.getElementById("overlay");
+  overlay.remove();
+
+  //world.render();
+  world.start();
+  world.initControls();
+  world.startCameraSequence();
+
+  sound.play();
+}
+
+function audioModulo() {
+  const fftSize = 128;
+
+  const file = "../audio/Lonely-warrior.mp3";
+  const loader = new AudioLoader();
+  loader.load(file, function (buffer) {
+    sound.setBuffer(buffer);
+    loadSound = true;
+  });
+}
+
 main();
