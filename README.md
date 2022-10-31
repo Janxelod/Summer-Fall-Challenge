@@ -2,7 +2,7 @@
 
 ### Sujet: Métamorphose Maléfique
 
-Demo inspired by the games of late 90s early 2000s.
+Inspired by the horror games of late 90s early 2000s, I decided to choose a spooky theme in order to reuse some 3d models that I've made for an unfinished game project.
 
 ## Credits
 
