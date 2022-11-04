@@ -84,8 +84,6 @@ function createAlpaca() {
         })
         .onComplete((object) => {
           objectMesh.rotation.set(0, -rotation, 0);
-
-          console.log(objectMesh.rotation);
         })
         .start();
     }

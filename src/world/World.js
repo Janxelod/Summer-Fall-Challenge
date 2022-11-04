@@ -220,7 +220,6 @@ class World {
         //removePass("EffectFilm");
       },
       onComplete: () => {
-        console.log("End of lass scene");
         scene.remove(orbitMeshes);
       },
     });
@@ -242,15 +241,32 @@ class World {
         let finalDestiny = new Vector3();
         finalDestiny = jarjacha.getWorldDirection(finalDestiny);
         finalDestiny.multiplyScalar(500);
-        console.log("Destino final: ");
-        console.log(finalDestiny);
         controls.target = jarjacha.position;
         new TWEEN.Tween(jarjacha.position).to(finalDestiny, 12000).start();
       },
       onComplete: () => {},
     });
 
+    addSequence({
+      to: {},
+      delay: 5000,
+      duration: 3000,
+      onStart: () => {
+        this.finishScene();
+        console.log("End of last scene...");
+      },
+      onComplete: () => {
+        window.location.reload();
+      },
+    });
+
     startSequences();
+  }
+
+  finishScene() {
+    var div = document.getElementById("curtain");
+    div.classList.add("scene-end");
+    div.style.zIndex = 3;
   }
 
   initControls() {

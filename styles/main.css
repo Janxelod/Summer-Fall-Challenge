@@ -78,3 +78,28 @@ h1 {
   text-transform: uppercase;
   cursor: pointer;
 }
+
+#curtain {
+  position: absolute;
+
+  background: black;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-end {
+  animation-name: scene-end;
+  animation-duration: 3s;
+}
+
+@keyframes scene-end {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
