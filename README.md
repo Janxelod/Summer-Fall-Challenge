@@ -53,5 +53,3 @@ http-server . -p 8000
 
 If yarn build is executed, copy again the folders audio and texture in the root of the dist folder.
 
-## Soon: 
-The Github.io link to see the demo in realtime.
