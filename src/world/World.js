@@ -80,6 +80,10 @@ class World {
     // }
 
     const resizer = new Resizer(container, camera, renderer);
+
+    resizer.onResize = () => {
+      this.render();
+    };
   }
 
   startCameraSequence() {

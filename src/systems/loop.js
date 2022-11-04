@@ -3,9 +3,20 @@ import { Clock } from "three";
 
 const clock = new Clock();
 
-// var stats = new Stats();
-// stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-//document.body.appendChild(stats.dom);
+const fpsStats = new Stats();
+fpsStats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+
+const debugFPS = document.querySelector("#debugFPS");
+//debugFPS.appendChild(fpsStats.dom);
+
+const toggleDebug = () => {
+  const show = fpsStats.dom.isConnected;
+  if (show) {
+    debugFPS.removeChild(fpsStats.dom);
+  } else {
+    debugFPS.appendChild(fpsStats.dom);
+  }
+};
 
 class Loop {
   constructor(camera, scene, renderer, composer) {
@@ -14,11 +25,19 @@ class Loop {
     this.renderer = renderer;
     this.composer = composer;
     this.updatables = [];
+
+    window.addEventListener("keydown", (e) => {
+      const key = e.key;
+      const keyLower = key.toLowerCase();
+      if (keyLower === "d") {
+        toggleDebug();
+      }
+    });
   }
 
   start() {
     this.renderer.setAnimationLoop(() => {
-      //stats.begin();
+      fpsStats.begin();
       // render a frame
       this.tick();
 
@@ -27,7 +46,7 @@ class Loop {
       } else {
         this.renderer.render(this.scene, this.camera);
       }
-      //stats.end();
+      fpsStats.end();
     });
   }
 
