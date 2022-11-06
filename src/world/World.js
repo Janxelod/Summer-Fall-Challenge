@@ -46,6 +46,8 @@ let alpaca;
 let jarjacha;
 let initialAlpacaPosition;
 
+let resizer;
+
 let composer;
 class World {
   constructor(container) {
@@ -79,11 +81,15 @@ class World {
     //   loop.updatables.push(GLOBAL_CONFIG.GetLogger());
     // }
 
-    const resizer = new Resizer(container, camera, renderer);
+    resizer = new Resizer(container, camera, renderer, composer);
 
     resizer.onResize = () => {
       this.render();
     };
+  }
+
+  setNoPixelated() {
+   resizer.setNoPixelated();
   }
 
   startCameraSequence() {
@@ -288,8 +294,8 @@ class World {
   }
 
   render() {
-    // draw a single frame
-    renderer.render(scene, camera);
+   composer.render();
+   renderer.render(scene, camera);
   }
 
   start() {

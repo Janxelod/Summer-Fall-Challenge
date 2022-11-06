@@ -1,4 +1,3 @@
-import { Color, Uniform } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
@@ -15,17 +14,15 @@ let passDictionary = {};
 
 const createComposer = (renderer, scene, camera) => {
   composer = new EffectComposer(renderer);
+  composer.setPixelRatio(window.devicePixelRatio);
   composer.addPass(new RenderPass(scene, camera));
-
-  const width = window.innerWidth;
-  const height = window.innerHeight;
 
   const gammaCorrection = new ShaderPass(GammaCorrectionShader);
 
   const effectFilm = new FilmPass(0.35, 0.025, 648, false);
 
-  addPass("EffectGammaCorrection", gammaCorrection);
-  addPass("EffectFilm", effectFilm);
+   addPass("EffectGammaCorrection", gammaCorrection);
+   addPass("EffectFilm", effectFilm);
 
   return composer;
 };

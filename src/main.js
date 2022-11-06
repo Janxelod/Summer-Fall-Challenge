@@ -1,4 +1,5 @@
 import { AudioListener, Audio, AudioLoader } from "three";
+import { GLOBAL_CONFIG } from "./config.js";
 
 import { World } from "./world/World.js";
 
@@ -11,14 +12,22 @@ function main() {
   const container = document.querySelector("#scene-container");
   world = new World(container);
 
-  const startButton = document.getElementById("startButton");
-  startButton.addEventListener("click", init);
+  const startButton1 = document.getElementById("startButton1");
+  const startButton2 = document.getElementById("startButton2");
+
+  startButton1.addEventListener("click", init);
+  startButton2.addEventListener("click", init);
 
   audioModulo();
 }
 
-function init() {
+function init(event) {
   if (!loadSound) return;
+  
+  if(event.srcElement.id === "startButton2")
+  {
+      world.setNoPixelated();
+  }
 
   const overlay = document.getElementById("overlay");
   overlay.remove();

@@ -19,6 +19,8 @@ const GLOBAL_CONFIG = {
     fogNoiseFreq: 0.0012,
     fogNoiseImpact: 0.5,
   },
+
+  SIZE_FACTOR: 4
 };
 
 export { GLOBAL_CONFIG };
