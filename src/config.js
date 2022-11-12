@@ -24,7 +24,9 @@ const GLOBAL_CONFIG = {
   },
 
   SIZE_FACTOR: PIXELATED_SIZE_FACTOR,
-  toggleSizeFactor: () => (this.SIZE_FACTOR === 1 ? PIXELATED_SIZE_FACTOR : 1),
+  toggleSizeFactor: function () {
+   this.SIZE_FACTOR = (this.SIZE_FACTOR === 1 ? PIXELATED_SIZE_FACTOR : 1)
+  } 
 };
 
 export { GLOBAL_CONFIG };
