@@ -1,6 +1,9 @@
 import { ClearingLogger } from "./clearingLogger";
 
 const logger = new ClearingLogger(document.querySelector("#debug pre"));
+// Using arbitrary value to downscale the resolution of the canvas in order to give a look retro
+const PIXELATED_SIZE_FACTOR = window.devicePixelRatio * 6;
+
 const GLOBAL_CONFIG = {
   DEBUG: true,
 
@@ -20,7 +23,8 @@ const GLOBAL_CONFIG = {
     fogNoiseImpact: 0.5,
   },
 
-  SIZE_FACTOR: 4
+  SIZE_FACTOR: PIXELATED_SIZE_FACTOR,
+  toggleSizeFactor: () => (this.SIZE_FACTOR === 1 ? PIXELATED_SIZE_FACTOR : 1),
 };
 
 export { GLOBAL_CONFIG };
